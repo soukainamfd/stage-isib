@@ -1,0 +1,60 @@
+{
+  "seed": 42,
+  "train_fraction": 0.8,
+  "stratify_spatial": false,
+  "split_mode": "random_shuffle",
+  "n_total": 4762,
+  "n_train": 3810,
+  "n_val": 952,
+  "r_zone_edges_nm": [
+    null,
+    200.0,
+    1000.0,
+    null
+  ],
+  "r_zone_labels": [
+    "R_lt_200nm",
+    "R_200_1000nm",
+    "R_ge_1000nm"
+  ],
+  "train_coverage": {
+    "subset": "train",
+    "n": 3810,
+    "by_r_zone": {
+      "R_lt_200nm": 1128,
+      "R_200_1000nm": 1184,
+      "R_ge_1000nm": 1498
+    },
+    "by_theta_band": {
+      "theta_pi2_pi": 1937,
+      "theta_0_pi2": 1873
+    },
+    "R_nm_min": 50.12833683091616,
+    "R_nm_max": 6982.359994035393,
+    "theta_deg_min": 0.022483176694856364,
+    "theta_deg_max": 179.99050634181606
+  },
+  "val_coverage": {
+    "subset": "val",
+    "n": 952,
+    "by_r_zone": {
+      "R_lt_200nm": 266,
+      "R_200_1000nm": 322,
+      "R_ge_1000nm": 364
+    },
+    "by_theta_band": {
+      "theta_0_pi2": 479,
+      "theta_pi2_pi": 473
+    },
+    "R_nm_min": 50.1589538897479,
+    "R_nm_max": 6990.143217656472,
+    "theta_deg_min": 0.10279015257099632,
+    "theta_deg_max": 179.73409701587613
+  },
+  "coverage_warnings": [],
+  "paths": {
+    "train_csv": "kernel_train.csv",
+    "val_csv": "kernel_val.csv",
+    "meta_json": "etape3_meta.json"
+  }
+}
