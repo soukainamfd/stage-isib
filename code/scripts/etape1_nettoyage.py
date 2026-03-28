@@ -20,8 +20,16 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-R_NP_NM = 50.0  # rayon NP, diamètre 100 nm (thèse Derrien)
+R_NP_NM = 50.0  # rayon NP, diamètre 100 nm (thèse Derrien, ch. 3)
 SIGMA_REL_MAX = 0.05
+# Cohérence « jouet » avec la thèse (géométrie et ordres de grandeur, pas le MC réel) :
+# — cube d’eau ~15 µm, NP 100 nm au centre ; R mesuré depuis le centre NP.
+# — θ ∈ [0, π], axe polaire = faisceau X selon z (symétrie azimutale).
+# — Fig. 3.10 : écarts relatifs jusqu’à ~55 % selon la direction ; sur un facteur
+#   (1 + a cos θ), l’écart relatif entre θ=0 et θ=π vaut 2a/(1−a) ≈ 55 % pour a ≈ 0,216.
+R_KERNEL_MIN_NM = 50.0
+R_KERNEL_MAX_NM = 7000.0
+SYNTHETIC_COS_THETA_AMP = 0.216  # ~55 % d’anisotropie avant/arrière (proxy analytique)
 
 
 def _read_table(path: Path) -> pd.DataFrame:
@@ -74,11 +82,17 @@ def _normalize_columns(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def create_synthetic_example(n: int = 8000, seed: int = 42) -> pd.DataFrame:
-    """Jeu factice pour démo (en attendant les sorties Monte Carlo réelles)."""
+    """Jeu factice pour tests pipeline : inspire de la thèse (géométrie, θ, anisotropie ~55 %).
+
+    Ne reproduit pas les simulations Geant4 ; les vraies données restent D(R,θ) Monte Carlo.
+    """
     rng = np.random.default_rng(seed)
-    R = np.exp(rng.uniform(np.log(50.0), np.log(7000.0), n))
+    R = np.exp(
+        rng.uniform(np.log(R_KERNEL_MIN_NM), np.log(R_KERNEL_MAX_NM), n)
+    )
     theta = rng.uniform(0.0, np.pi, n)
-    base = 1e6 / (R**2 + 100.0) * (1.0 + 0.35 * np.cos(theta))
+    # Décroissance type « énergie qui s’éloigne » (jouet) × anisotropie faisceau
+    base = 1e6 / (R**2 + 100.0) * (1.0 + SYNTHETIC_COS_THETA_AMP * np.cos(theta))
     noise = rng.uniform(0.92, 1.08, n)
     D = np.maximum(base * noise, 1e-12)
     rel_err = rng.uniform(0.005, 0.08, n)
